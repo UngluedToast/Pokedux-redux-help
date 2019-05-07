@@ -11,7 +11,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
 
-
+import {createStore} from 'redux'
 import initialState from './base.json';
 console.log(initialState);
 
@@ -33,19 +33,36 @@ function catchCard (id) {
         }
     }
 }
-
+window.catchCard = catchCard;
 
 // ====================================================
 // REDUCER
 
 function cards(state=initialState, action={type: ''}) {
-
+    console.log(`cards got called with ${action.payload}`);
     switch(action.type) {
         case ACTION_CATCH:
+            console.log(`cards got called with ${action.payload.id}`);
             // find the card, set it to "caught"
+            const newState = {
+                ...state,
+                cards: state.cards.map(card => {
+                    if (card.id === action.payload.id) {
+                        return {
+                            ...card,
+                            isCaught: true
+                        }
+                    } else {
+                        return card;
+                    }
+                })
+            }
         break;
+
         default:
+
             return state;
+
         break;
     }
 }
@@ -53,3 +70,5 @@ function cards(state=initialState, action={type: ''}) {
 
 // ====================================================
 // STORE
+const store = createStore(Cards);
+window.store = store;
